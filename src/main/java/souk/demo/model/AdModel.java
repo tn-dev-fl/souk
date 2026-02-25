@@ -3,11 +3,12 @@ package souk.demo.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-
-@Data // generates getters, setters, toString, equals, hashCode
+@Data
 @NoArgsConstructor // generates default constructor
 @AllArgsConstructor
 public class AdModel {

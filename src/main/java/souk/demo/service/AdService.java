@@ -41,7 +41,9 @@ public class AdService {
     }
 
     public AdDTO updateAd(Long id, AdDTO adDTO) {
+    	
         return adRepository.findById(id).map(ad -> {
+        
             ad.setTitle(adDTO.getTitle());
             ad.setDescription(adDTO.getDescription());
             ad.setPrice(adDTO.getPrice());

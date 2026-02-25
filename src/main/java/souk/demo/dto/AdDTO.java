@@ -28,6 +28,10 @@ public class AdDTO {
     public String getTitle() {
         return title;
     }
+    
+    public void test() {
+    	
+    }
 
     public void setTitle(String title) {
         this.title = title;

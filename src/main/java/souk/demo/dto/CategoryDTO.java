@@ -1,28 +1,20 @@
 package souk.demo.dto;
 
+import lombok.Data;
+
+@Data
 public class CategoryDTO {
 
     private String name;
 
+    private Long id;
     public CategoryDTO() {
     }
 
-    public CategoryDTO(String name) {
+    public CategoryDTO(Long id,String name) {
 
         this.name = name;
+        this.id=id;
     }
 
-    // Getter for id
-
-    // Setter for id
-
-    // Getter for name
-    public String getName() {
-        return name;
-    }
-
-    // Setter for name
-    public void setName(String name) {
-        this.name = name;
-    }
 }
