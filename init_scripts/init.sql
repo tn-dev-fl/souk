@@ -1,9 +1,14 @@
 -- init_scripts/init.sql
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE
+CREATE TABLE user (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    email VARCHAR(255),
+    phone VARCHAR(20),
+    password VARCHAR(255),
+    ip VARCHAR(45),
+    name VARCHAR(100),
+    last_name VARCHAR(100),
+    PRIMARY KEY (id)
 );
 
-INSERT INTO users (name, email) VALUES ('John Doe', 'john@example.com');
-INSERT INTO users (name, email) VALUES ('Jane Smith', 'jane@example.com');
+INSERT INTO user (email, phone, password, ip, name, last_name)
+VALUES ('ahmed@example.com', '123-456-7890', 'hashed_password_here', '192.168.1.1', 'Ahmed', 'Ali');

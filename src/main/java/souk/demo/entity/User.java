@@ -4,39 +4,39 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @ToString(includeFieldNames=true)
-
+@NoArgsConstructor
 @Entity
 public class User {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Getter
 	@Setter
-	private long Id;
+	private long id;
 	@Getter
 	@Setter
-	private String Email;
+	private String email;
 	@Getter
 	@Setter
-	private String Phone;
+	private String phone;
 	@Getter
 	@Setter
-	private String Password;
+	private String password;
 	@Getter
 	@Setter
-	private String Ip;
+	private String ip;
 	@Getter
 	@Setter
-	private String Name;
+	private String name;
 	@Getter
 	@Setter
-	private String LastName;
+	private String last_name;
 	
 	public User(String Email,String Phone,String Name,String LastName,String Ip) {
-		this.Email=Email;
-		this.Phone=Phone;
-		this.Name=Name;
-		this.LastName=LastName;
-		this.Ip=Ip;
+		this.email=Email;
+		this.phone=Phone;
+		this.name=Name;
+		this.last_name=LastName;
+		this.ip=Ip;
 	}
 	
 	
