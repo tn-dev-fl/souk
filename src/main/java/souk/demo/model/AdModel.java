@@ -3,9 +3,8 @@ package souk.demo.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
+
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Data
@@ -24,7 +23,7 @@ public class AdModel {
     private Category category;
     private String location;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 
 }

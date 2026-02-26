@@ -1,36 +1,39 @@
 package souk.demo.dto;
 
 public class AdDTO {
-
+    private Long id;
     private String title;
     private String description;
     private Double price;
     private Long categoryID;
-    private Long AdID;
-    private String categoryName;
+
     private String location;
+    private Long userID;
 
     // Constructors
     public AdDTO() {
     }
 
-    public AdDTO(String title, String description, Double price, Long categoryID, String categoryName,
-            String location) {
+    public AdDTO(Long id, String title, String description, Double price, Long categoryID,
+            String location, Long userID) {
+        this.id = id;
 
         this.title = title;
         this.description = description;
         this.price = price;
         this.categoryID = categoryID;
-        this.categoryName = categoryName;
+
         this.location = location;
+        this.userID = userID;
+
     }
 
     public String getTitle() {
         return title;
     }
-    
+
     public void test() {
-    	
+
     }
 
     public void setTitle(String title) {
@@ -61,12 +64,12 @@ public class AdDTO {
         this.categoryID = categoryID;
     }
 
-    public Long getAdId() {
-        return AdID;
+    public Long getUserId() {
+        return userID;
     }
 
-    public void setAdId(Long AdID) {
-        this.AdID = AdID;
+    public void setUserId(Long userID) {
+        this.userID = userID;
     }
 
     public String getLocation() {
@@ -77,11 +80,12 @@ public class AdDTO {
         this.location = location;
     }
 
-    public String getCategoryName() {
-        return categoryName;
+    public Long getId() {
+        return id;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setId(Long id) {
+        this.id = id;
     }
+
 }

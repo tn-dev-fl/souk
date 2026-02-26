@@ -2,25 +2,31 @@ package souk.demo.service;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
 import souk.demo.dto.AdDTO;
 
 import souk.demo.model.AdModel;
 import souk.demo.model.Category;
+
+import souk.demo.model.UserModel;
 import souk.demo.repository.AdRepository;
 import souk.demo.repository.CategoryRepository;
-
+import souk.demo.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AdService {
 
+    private final UserRepository userRepository;
+
     private final CategoryRepository categoryRepository;
     private final AdRepository adRepository;
 
-    public AdService(AdRepository adRepository, CategoryRepository categoryRepository) {
+    public AdService(AdRepository adRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
         this.adRepository = adRepository;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
     }
 
     public List<AdDTO> getAllAds() {
@@ -41,9 +47,9 @@ public class AdService {
     }
 
     public AdDTO updateAd(Long id, AdDTO adDTO) {
-    	
+
         return adRepository.findById(id).map(ad -> {
-        
+
             ad.setTitle(adDTO.getTitle());
             ad.setDescription(adDTO.getDescription());
             ad.setPrice(adDTO.getPrice());
@@ -67,15 +73,15 @@ public class AdService {
 
     private AdDTO convertToDTO(AdModel ad) {
         // You must convert the Category entity into a CategoryDTO
-
         return new AdDTO(
-
+                ad.getId(),
                 ad.getTitle(),
                 ad.getDescription(),
                 ad.getPrice(),
                 ad.getCategory().getId(),
-                ad.getCategory().getName(), // Pass the DTO, not the Entity
-                ad.getLocation());
+                ad.getLocation(),
+                ad.getUser().getId());
+
     }
 
     private AdModel convertToEntity(AdDTO adDTO) {
@@ -86,12 +92,20 @@ public class AdService {
         ad.setPrice(adDTO.getPrice());
         ad.setLocation(adDTO.getLocation());
 
+        // Handle Category safely
         if (adDTO.getCategoryId() != null) {
-            Category category = new Category();
-            category.setId(adDTO.getCategoryId());
-            category.setName(adDTO.getCategoryName());
-
+            Category category = categoryRepository.findById(adDTO.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "Category not found with id " + adDTO.getCategoryId()));
             ad.setCategory(category);
+        }
+
+        // Handle User safely
+        if (adDTO.getUserId() != null) {
+            UserModel user = userRepository.findById(adDTO.getUserId())
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            "User not found with id " + adDTO.getUserId()));
+            ad.setUser(user);
         }
 
         return ad;

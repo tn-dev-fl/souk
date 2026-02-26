@@ -19,7 +19,7 @@ public class CategoryService {
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(this::convertToDTO) // Fixed: Matches method name below
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -45,15 +45,13 @@ public class CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    // Mapping Methods
-    // Renamed to convertToDTO to match usage in methods above
     private CategoryDTO convertToDTO(Category category) {
         return new CategoryDTO(category.getId(), category.getName());
     }
 
     private Category convertToEntity(CategoryDTO categoryDTO) {
         Category category = new Category();
-        category.setId(categoryDTO.getId());
+
         category.setName(categoryDTO.getName());
         return category;
     }
