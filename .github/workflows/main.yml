@@ -1,0 +1,22 @@
+name: Java Integrity Check
+
+on:
+  pull_request:
+    branches: [ main ] # Only runs when someone tries to merge into main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven' # or 'gradle'
+
+      - name: Compile and Test
+        # This command will exit with an error code if the code doesn't compile
+        run: mvn clean verify -DskipTests # Use './gradlew build' if using Gradle
