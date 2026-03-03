@@ -1,0 +1,15 @@
+CREATE OR REPLACE FUNCTION check_user_exists(
+    p_email VARCHAR, 
+    p_username VARCHAR, 
+    p_phone VARCHAR
+) 
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM user_model 
+        WHERE email = p_email 
+           OR username = p_username 
+          
+    );
+END;
+$$ LANGUAGE plpgsql;

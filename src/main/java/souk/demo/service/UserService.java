@@ -2,6 +2,13 @@ package souk.demo.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.ParameterMode;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.StoredProcedureQuery;
 import souk.demo.dto.UserDTO;
 
 import souk.demo.model.UserModel;
@@ -13,9 +20,26 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
+	@PersistenceContext
+    private EntityManager entityManager;
     private final UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
 
+    public Boolean getUserByEmail(String email,String username,String phone) {
+
+
+        Query query = entityManager
+                .createNativeQuery("CALL check_user_exists(:p_email, :p_username, :p_phone)")
+                .setParameter("p_email", email)
+                .setParameter("p_username", username)
+                .setParameter("p_phone", phone);
+        		
+
+        Object result = query.getSingleResult();
+
+        return (Boolean) result;
+    }
+    
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -59,7 +83,7 @@ public class UserService {
     }
 
     private UserDTO convertToDTO(UserModel user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail());
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(),null);
     }
 
     private UserModel convertToEntity(UserDTO userDTO) {

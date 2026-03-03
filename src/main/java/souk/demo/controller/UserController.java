@@ -3,6 +3,7 @@ package souk.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import souk.demo.dto.UserDTO;
+import souk.demo.model.UserModel;
 import souk.demo.service.UserService;
 
 import java.util.List;
@@ -31,9 +32,14 @@ public class UserController {
 
     // Create new user
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public void createUser(@RequestBody UserDTO userDTO) {
+    	 var test=userService.getUserByEmail(userDTO.getEmail(), userDTO.getUsername(), null);
+    	 System.out.println("the log is "+test);
+    	 if (test==false)
+    	 {
+    	
         UserDTO createdUser = userService.createUser(userDTO);
-        return ResponseEntity.ok(createdUser);
+    	 }
     }
 
     // Update user
