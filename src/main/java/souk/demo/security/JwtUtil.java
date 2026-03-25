@@ -2,6 +2,8 @@ package souk.demo.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import souk.demo.model.UserModel;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,9 +24,13 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String username) {
+    public String generateToken(UserModel user) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(user.getUsername())
+
+                .claim("id", user.getId())
+                .claim("email", user.getEmail())
+                .claim("phone", user.getPhone())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
