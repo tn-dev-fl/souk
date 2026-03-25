@@ -13,12 +13,13 @@ public class UserConverter extends GenericConverter<UserModel, UserDTO> {
                 user -> new UserDTO(
                         user.getId(),
                         user.getUsername(),
-                        user.getEmail()),
+                        user.getEmail(), user.getPhone()),
 
                 dto -> {
                     UserModel user = new UserModel();
                     user.setUsername(dto.getUsername());
                     user.setEmail(dto.getEmail());
+                    user.setPhone(dto.getPhone());
                     return user;
                 });
     }

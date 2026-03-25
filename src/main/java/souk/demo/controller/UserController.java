@@ -1,11 +1,11 @@
 package souk.demo.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-import souk.demo.dto.AuthRequest;
 import souk.demo.dto.AuthResponse;
 import souk.demo.dto.UserDTO;
 import souk.demo.security.JwtUtil;
@@ -44,8 +44,18 @@ public class UserController {
     // Create new user
     @PostMapping("/register")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        UserDTO createdUser = userService.createUser(userDTO);
-    	 }
+
+        boolean userExists = userService.getUserByEmail(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPhone());
+
+        System.out.println("the log is " + userExists);
+
+        if (!userExists) {
+            UserDTO savedUser = userService.createUser(userDTO);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
     // Update user
@@ -63,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<?> login(@RequestBody UserDTO request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(

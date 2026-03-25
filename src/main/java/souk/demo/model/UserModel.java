@@ -11,34 +11,37 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 
 @Data
+
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class UserModel implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String username;
+
+    @Email
+    @NotBlank
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @NotBlank
+    @Column(nullable = false)
     private String password;
-
-    // Spring Security required methods
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
+    @NotBlank
+    @Column(nullable = false)
+    private String phone;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

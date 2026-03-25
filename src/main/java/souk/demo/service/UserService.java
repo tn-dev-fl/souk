@@ -2,7 +2,6 @@ package souk.demo.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import souk.demo.converter.UserConverter;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -10,6 +9,7 @@ import jakarta.persistence.ParameterMode;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.StoredProcedureQuery;
+import souk.demo.converter.UserConverter;
 import souk.demo.dto.UserDTO;
 import souk.demo.model.UserModel;
 import souk.demo.repository.UserRepository;
@@ -19,29 +19,26 @@ import java.util.List;
 @Service
 public class UserService {
 
-	@PersistenceContext
+    @PersistenceContext
     private EntityManager entityManager;
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserConverter userConverter) {
-    public Boolean getUserByEmail(String email,String username,String phone) {
-
+    public Boolean getUserByEmail(String email, String username, String phone) {
 
         Query query = entityManager
-                .createNativeQuery("CALL check_user_exists(:p_email, :p_username, :p_phone)")
+                .createNativeQuery("SELECT check_user_exists(:p_email, :p_username, :p_phone)")
                 .setParameter("p_email", email)
                 .setParameter("p_username", username)
                 .setParameter("p_phone", phone);
-        		
 
         Object result = query.getSingleResult();
 
         return (Boolean) result;
     }
-    
-    public UserService(UserRepository userRepository) {
+
+    public UserService(UserRepository userRepository, UserConverter userConverter) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.passwordEncoder = new BCryptPasswordEncoder();
