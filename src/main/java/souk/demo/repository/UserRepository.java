@@ -10,6 +10,5 @@ import souk.demo.model.UserModel;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserModel, Long> {
-    // You can add custom queries here if needed later
-	
+    Optional<UserModel> findByUsername(String username);
 }

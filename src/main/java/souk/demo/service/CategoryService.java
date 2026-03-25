@@ -1,58 +1,46 @@
 package souk.demo.service;
 
 import org.springframework.stereotype.Service;
+import souk.demo.converter.CategoryConverter;
 import souk.demo.dto.CategoryDTO;
-import souk.demo.model.Category;
 import souk.demo.repository.CategoryRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    private final CategoryRepository categoryRepository;
+    private final CategoryConverter categoryConverter;
+
+    public CategoryService(CategoryRepository categoryRepository, CategoryConverter categoryConverter) {
         this.categoryRepository = categoryRepository;
+        this.categoryConverter = categoryConverter;
     }
 
     public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return categoryConverter.toDTOList(categoryRepository.findAll());
     }
 
     public CategoryDTO getCategoryById(Long id) {
         return categoryRepository.findById(id)
-                .map(this::convertToDTO) // Fixed: Matches method name below
+                .map(categoryConverter::toDTO)
                 .orElse(null);
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        Category category = convertToEntity(categoryDTO);
-        return convertToDTO(categoryRepository.save(category));
+        return categoryConverter.toDTO(
+                categoryRepository.save(categoryConverter.toEntity(categoryDTO)));
     }
 
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        return categoryRepository.findById(id).map(existingCategory -> {
-            existingCategory.setName(categoryDTO.getName());
-            return convertToDTO(categoryRepository.save(existingCategory)); // Fixed: Matches method name below
+        return categoryRepository.findById(id).map(existing -> {
+            existing.setName(categoryDTO.getName());
+            return categoryConverter.toDTO(categoryRepository.save(existing));
         }).orElse(null);
     }
 
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
-    }
-
-    private CategoryDTO convertToDTO(Category category) {
-        return new CategoryDTO(category.getId(), category.getName());
-    }
-
-    private Category convertToEntity(CategoryDTO categoryDTO) {
-        Category category = new Category();
-
-        category.setName(categoryDTO.getName());
-        return category;
     }
 }
