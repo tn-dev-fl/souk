@@ -12,18 +12,20 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import souk.demo.repository.UserRepository;
+import souk.demo.service.CustomUserDetailsService;
+
 import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final UserRepository userRepository;
+    private final CustomUserDetailsService CustomUserDetailsService;
     private final JwtUtil jwtUtil;
 
-    public JwtFilter(JwtUtil jwtUtil, UserRepository userRepository) {
+    public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
         this.jwtUtil = jwtUtil;
 
-        this.userRepository = userRepository;
+        this.CustomUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userRepository.findByUsername(username);
+            UserDetails userDetails = CustomUserDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
