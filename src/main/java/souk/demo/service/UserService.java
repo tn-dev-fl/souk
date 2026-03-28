@@ -1,10 +1,12 @@
 package souk.demo.service;
 
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
-
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
@@ -35,6 +37,28 @@ public class UserService {
         Object result = query.getSingleResult();
 
         return (Boolean) result;
+    }
+
+    public UserModel authenticate(String identifier, String rawPassword) {
+        try {
+            // 1. Retrieve the user using the SQL function
+            // Notice we pass UserModel.class to map the result directly to your entity
+            Query query = entityManager
+                    .createNativeQuery("SELECT * FROM get_user_by_username_or_email(:p_identifier)", UserModel.class)
+                    .setParameter("p_identifier", identifier);
+
+            UserModel user = (UserModel) query.getSingleResult();
+
+            if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+                return user; // Authentication successful!
+            } else {
+                throw new BadCredentialsException("Invalid password provided.");
+            }
+
+        } catch (NoResultException e) {
+            // Thrown by getSingleResult() if no user is found
+            throw new UsernameNotFoundException("User not found with: " + identifier);
+        }
     }
 
     public UserService(UserRepository userRepository, UserConverter userConverter) {

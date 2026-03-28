@@ -13,3 +13,17 @@ BEGIN
     );
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_user_by_username_or_email(
+    p_identifier VARCHAR
+) 
+RETURNS SETOF user_model AS $$
+BEGIN
+    RETURN QUERY 
+    SELECT * FROM user_model 
+    WHERE email = p_identifier 
+       OR username = p_identifier
+    LIMIT 1; -- Ensures only one record is returned
+END;
+$$ LANGUAGE plpgsql;
