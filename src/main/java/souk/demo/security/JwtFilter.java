@@ -11,21 +11,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import souk.demo.model.UserModel;
 import souk.demo.repository.UserRepository;
-import souk.demo.service.CustomUserDetailsService;
+//import souk.demo.service.CustomUserDetailsService;
+import souk.demo.service.UserService;
 
 import java.io.IOException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final CustomUserDetailsService CustomUserDetailsService;
+    private final UserRepository userRepository;
+
+    // private final CustomUserDetailsService CustomUserDetailsService;
     private final JwtUtil jwtUtil;
 
-    public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService customUserDetailsService) {
+    public JwtFilter(JwtUtil jwtUtil, UserRepository userRepository) {
+        this.userRepository = userRepository;
+
         this.jwtUtil = jwtUtil;
 
-        this.CustomUserDetailsService = customUserDetailsService;
+        // this.CustomUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -46,11 +53,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = CustomUserDetailsService.loadUserByUsername(username);
+            // UserDetails userDetails
+            // =CustomUserDetailsService.loadUserByUsername(username);
+            UserModel userModel = userRepository.findByUsername(username);
 
-            if (jwtUtil.validateToken(token, userDetails)) {
+            if (jwtUtil.validateToken(token, userModel)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
+                        userModel, null, userModel.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

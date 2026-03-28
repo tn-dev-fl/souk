@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
@@ -24,12 +24,12 @@ public class UserController {
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
+    // private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
-        this.authenticationManager = authenticationManager;
+        // this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
@@ -97,12 +97,13 @@ public class UserController {
         try {
             logger.info("Login attempt for user: {}", request.getUsername());
 
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getUsername(),
-                            request.getPassword()));
+            // Authentication auth = authenticationManager.authenticate(
+            // new UsernamePasswordAuthenticationToken(
+            // request.getUsername(),
+            // request.getPassword()));
+            UserModel auth = userService.authenticate(request.getUsername(), request.getPassword());
 
-            String token = jwtUtil.generateToken((UserModel) auth.getPrincipal());
+            String token = jwtUtil.generateToken(auth);
             logger.info("Login successful for user: {}", request.getUsername());
 
             return ResponseEntity.ok(new AuthResponse(token));
