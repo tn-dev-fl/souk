@@ -1,6 +1,6 @@
-FROM  dhi.io/eclipse-temurin:21-alpine3.22
+FROM  eclipse-temurin:25
 WORKDIR /app
 COPY target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
 
-EXPOSE 9090
+EXPOSE 8081
