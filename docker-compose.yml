@@ -1,37 +1,37 @@
 services:
-
   app:
     build: .
     container_name: spring-app
     ports:
-      - "9090:9090"
+      - "8081:8081"
     depends_on:
-        db:
-            condition: service_healthy
+      db:
+        condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/mydb
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: secret
+      # We use 'db' as the hostname because it matches the service name below
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/soukDB
+      SPRING_DATASOURCE_USERNAME: ahmed
+      SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
   db:
-    image: mysql:8.0
-    container_name: mysql-db
+    image: postgres:17
+    container_name: postgres-db
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-psecret"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
-
+      test: ["CMD-SHELL", "pg_isready -U ahmed -d soukDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     environment:
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: rootsecret
+      POSTGRES_DB: soukDB
+      POSTGRES_USER: ahmed
+      POSTGRES_PASSWORD: 123
     ports:
-      - "3307:3306"
+      - "5432:5432"
     volumes:
-      - mysqldata:/var/lib/mysql
+      - postgresdata:/var/lib/postgresql/data
+      - ./init_scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
-  mysqldata:
+  postgresdata:
